@@ -1,146 +1,140 @@
 <template>
- 
-<lightning-button variant="brand"
-label="New Project"
-title="New Project"
-onclick={customShowModalPopup}
-class="slds-m-left_x-small"></lightning-button>
-    
-<template if:true={customFormModal}>
- 
-<section id="modal" role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
-<div class="slds-modal__container">
-   
-    <header class="slds-modal__header">
-        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={customHideModalPopup}>
-            <lightning-icon icon-name="utility:close"
-            alternative-text="close"
-            variant="inverse"
-            size="small" >
-        </lightning-icon>
-       
-            <span class="slds-assistive-text">Close</span>
-            <svg
-            class="slds-button__icon slds-button__icon_large"
-            aria-hidden="true"
+  <lightning-button variant= "brand" label="New Project" onclick={handlePopup}></lightning-button>
+  <div class="chart slds-m-around_medium" lwc:dom="manual"></div>
+  
+  <template if:true={modalPopUpToggleFlag}>
+  
+    <section
+      id="modal"
+      role="dialog"
+      tabindex="-1"
+      aria-labelledby="modal-heading-01"
+      aria-modal="true"
+      aria-describedby="modal-content-id-1"
+      class="slds-modal slds-fade-in-open"
+    >
+      <div class="slds-modal__container">
+        <header class="slds-modal__header">
+          <button
+            class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+            title="Close" onclick={handlePopup}
           >
-          <use
-          xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"
-           ></use>
+          <lightning-icon icon-name="utility:close"
+          alternative-text="close"
+          variant="inverse"
+          size="small" >
+      </lightning-icon>
+     
+      <span class="slds-assistive-text">Close</span>
 
-          </svg>
-          <span class="slds-assistive-text">Close</span>
-        </button>
-        <div class="header" id="newProject">
-        <strong> <h1 >New Project</h1></strong>
-         </div>
-    </header>
-    
-   
-    <div class="slds-modal__content slds-p-around_large">
-        <p>INFORMATION</p>
-
-        <lightning-record-edit-form
-        id="recordViewForm"
-        record-id={recordId}
-        object-api-name="Account"
-        onsubmit={handleSuccessForm}
-      >
-    <div class="slds-grid slds-wrap">
-        
-        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--medium slds-m-bottom_medium">
-
-            <lightning-input label="Project Name"  required></lightning-input>
+            <svg
+              class="slds-button__icon slds-button__icon_large"
+              aria-hidden="true"
+            >
+              <use
+                xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"
+              ></use>
+            </svg>
+            <span class="slds-assistive-text">Close</span>
+          </button>
+          <div class="header" id="newProject">
+            <strong> <h1 >New Project</h1></strong>
         </div>
-    
-        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--medium slds-m-bottom_medium">
-            <template if:true={projecttypePicklist.data}>
+        </header>
+  
+        <div class="slds-modal__content slds-p-around_large">
+          <p>INFORMATION</p>
 
-                <lightning-combobox name="Project Type" label="Project Type" value={value1} placeholder="Search People"
+          <div class="slds-p-bottom_large slds-p-left_large" style="width:500px">
+            <lightning-record-edit-form
+              id="recordViewForm"
+              record-id={recordId}
+              object-api-name="Project__c"
+            >
 
-                    options={projecttypePicklist.data.values} onchange={handleChange1}>
+              <div class="slds-col slds-size_5-of-6">
+                <span>
+                <lightning-layout>
+                <lightning-layout-item size="12">
+                  <lightning-messages></lightning-messages>
+              <lightning-input-field field-name="Name" required> </lightning-input-field>
+             
+              <lightning-input-field field-name="Owner__c" ></lightning-input-field>
+             
+              <lightning-input-field field-name="Status__c"> </lightning-input-field>
+               </lightning-layout-item>
 
-                </lightning-combobox>
+              <lightning-layout-item size="12">
+               
+                <lightning-messages></lightning-messages>
+              <lightning-input-field field-name="Project_Type__c"> </lightning-input-field>
+              
+                <lightning-input-field field-name="End_Date__c"></lightning-input-field>
+               
+                  <lightning-input-field field-name="Priority__c"></lightning-input-field>
+                </lightning-layout-item> 
+                </lightning-layout>
+              </span>
+                </div>
 
-            </template>
-        </div>
-        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--medium slds-m-bottom_medium">
-             <template if:true={ownerPicklist.data}>
 
-                  <lightning-combobox name="Owner" label="Owner" value={value2} placeholder="Search People"
+              <div class="slds-card">
+                <div class="slds-m-around_medium">
+                  <strong> <p style="color:blue">
+                    Upload Files</p></strong>
 
-                     options={ownerPicklist.data.values} onchange={handleChange2}>
+              <lightning-file-upload
 
-                  </lightning-combobox>
-
-             </template>
-        </div>
-        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--medium slds-m-bottom_medium">
-            <div>
-       
-                <lightning-input type="date" name="input2" label="End Date" placeholder="Sarch People"></lightning-input>
-            </div>
-         </div>
-        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--medium slds-m-bottom_medium">
-             <template if:true={statusPicklist.data}>
-
-                <lightning-combobox name="Status" label="Status" value={value3} placeholder="Search Milestone"
-
-                     options={statusPicklist.data.values} onchange={handleChange3} required>
-
-                 </lightning-combobox>
-
-            </template>
-         </div>
-        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--medium slds-m-bottom_medium">
-            <template if:true={priorityPicklist.data}>
-
-                <lightning-combobox name="Priority" label="Priority"  value={value4} placeholder="Search Milestone"
-
-                    options={priorityPicklist.data.values} onchange={handleChange4}>
-
-                </lightning-combobox>
-
-            </template>
-        </div>
-     </div>
-<div class="slds-card">
-    <div class="slds-m-around_medium">
-       <strong> <p style="color:blue">
-            Upload Files</p></strong><br>
-
-            <lightning-file-upload
-            label="Upload File" 
-            variant="brand"
             name="fileUploader"
             accept={acceptedFormats}
             record-id={myRecordId}
             onuploadfinished={handleUploadFinished}
             multiple>
-    </lightning-file-upload>
-        
-     </div>
-</div>
-<h2> DESCRIPTION</h2>
+    </lightning-file-upload></div></div>
+<br>
+&nbsp;&nbsp;<h1>DESCRIPTION</h1>
+<div class="slds-p-horizontal_x-large" style="width:820px;">
     <lightning-card>    
         <lightning-input-rich-text
+            placeholder="Type something interesting"
             formats={allowedFormats}
             value={myVal}>
         </lightning-input-rich-text>
-
     </lightning-card>
-</lightning-record-edit-form>
-
+</div>
 <div class="slds-align_absolute-center">
-    <footer class="slds-modal__footer slds-modal__footer_directional">
-        <button class="slds-button slds-button--brand" onclick={customHideModalPopup}>Cancel</button>&nbsp;
-        <button   class="slds-button slds-button_brand"  onclick={handleSaveClick} >Save </button>&nbsp;
-        <button  class="slds-button slds-button_brand"  onclick={saveAndNewClick} value="saveandnew">Save & New </button>
-     </footer> </div>
-</div>
-</div>
-</section>
-
-</template>
-
+    <lightning-button
+    type="skip"
+    variant="brand"
+    label="Cancel"
+    class="slds-m-top_medium"
+    onclick={handleSkip}
+  >
+  </lightning-button> &nbsp; &nbsp;
+              <lightning-button
+                type="submit"
+                variant="brand"
+                label="Save"
+                class="slds-m-top_medium"
+              >
+              </lightning-button>&nbsp; &nbsp;
+              <lightning-button
+                type="submit"
+                variant="brand"
+                label="Save & New"
+                class="slds-m-top_medium"
+                onclick={handleSubmit}
+              >
+              </lightning-button>
+          
+            </div>
+            </lightning-record-edit-form>
+          </div>
+        </div>
+      
+      </div>
+    </section>
+    
+  </template>
+  
 </template>
