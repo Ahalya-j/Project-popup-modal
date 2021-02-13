@@ -58,20 +58,29 @@
                 <lightning-layout-item size="12">
                   <lightning-messages></lightning-messages>
               <lightning-input-field field-name="Name" required> </lightning-input-field>
+             <lightning-combobox>
+              <lightning-input-field field-name="Owner__c" value={value1} placeholder="Search People"
+
+                     options={ownerPicklist.data.values} onchange={handleChange1}></lightning-input-field>
              
-              <lightning-input-field field-name="Owner__c" ></lightning-input-field>
-             
-              <lightning-input-field field-name="Status__c"> </lightning-input-field>
+              <lightning-input-field field-name="Status__c" value={value2} placeholder="Search Milestone"
+
+                     options={ownerPicklist.data.values} onchange={handleChange2} > </lightning-input-field></lightning-combobox>
                </lightning-layout-item>
 
               <lightning-layout-item size="12">
                
                 <lightning-messages></lightning-messages>
-              <lightning-input-field field-name="Project_Type__c"> </lightning-input-field>
+                <lightning-combobox>
+              <lightning-input-field field-name="Project_Type__c" value={value3} placeholder="Search People"
+
+                     options={ownerPicklist.data.values} onchange={handleChange3}  > </lightning-input-field>
               
-                <lightning-input-field field-name="End_Date__c"></lightning-input-field>
+                <lightning-input-field field-name="End_Date__c" placeholder="Search People"></lightning-input-field>
                
-                  <lightning-input-field field-name="Priority__c"></lightning-input-field>
+                  <lightning-input-field field-name="Priority__c"value={value4} placeholder="Search Milestone"
+
+                     options={ownerPicklist.data.values} onchange={handleChange4} ></lightning-input-field><lightning-combobox>
                 </lightning-layout-item> 
                 </lightning-layout>
               </span>
