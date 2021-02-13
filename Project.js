@@ -1,4 +1,7 @@
-import { LightningElement,api } from 'lwc';
+import { LightningElement,api,wire } from 'lwc';
+import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+
+import { getPicklistValues } from 'lightning/uiObjectInfoApi';
 import PROJECT__C_OBJECT from '@salesforce/schema/Project__c';
 
 import OWNER__C_FIELD from '@salesforce/schema/Project__c.owner__c';
@@ -10,6 +13,79 @@ export default class Project extends LightningElement {
   
   @api recordId;
   fields =[OWNER__C_FIELD,STATUS__C_FIELD,PROJECT_TYPE__C_FIELD,END_DATE__C_FIELD,PRIORITY__C_FIELD]
+@wire(getObjectInfo, { objectApiName: PROJECT_OBJECT })
+accountMetadata;
+
+@wire(getPicklistValues,
+{
+     recordTypeId: '$accountMetadata.data.defaultRecordTypeId', 
+
+    fieldApiName: PROJECT_TYPE__C_FIELD
+
+        }
+
+    )
+    projecttypePicklist;
+
+    handleChange1(event) {
+
+        this.value = event.detail.value;
+
+    }
+
+    @wire(getPicklistValues,
+
+        {
+
+            recordTypeId: '$accountMetadata.data.defaultRecordTypeId', 
+
+            fieldApiName: OWNER__C_FIELD
+
+        }
+
+    )
+    ownerPicklist;
+
+    handleChange2(event) {
+
+        this.value = event.detail.value;
+
+    }
+
+    
+    @wire(getPicklistValues,
+
+        {
+
+            recordTypeId: '$accountMetadata.data.defaultRecordTypeId', 
+
+            fieldApiName: STATUS__C_FIELD
+
+        }
+
+    )
+    statusPicklist;
+
+    
+    handleChange3(event) {
+
+        this.value = event.detail.value;
+
+    }
+
+    @wire(getPicklistValues,
+
+        {
+
+            recordTypeId: '$accountMetadata.data.defaultRecordTypeId', 
+
+            fieldApiName: PRIORITY__C_FIELD
+
+        }
+
+    )
+    priorityPicklist;
+
   modalPopUpToggleFlag = false;
 
     handlePopup(){
