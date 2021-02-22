@@ -1,7 +1,4 @@
-import { LightningElement,api,wire } from 'lwc';
-import { getObjectInfo } from 'lightning/uiObjectInfoApi';
-
-import { getPicklistValues } from 'lightning/uiObjectInfoApi';
+import { LightningElement,api ,track} from 'lwc';
 import PROJECT__C_OBJECT from '@salesforce/schema/Project__c';
 
 import OWNER__C_FIELD from '@salesforce/schema/Project__c.owner__c';
@@ -9,119 +6,62 @@ import STATUS__C_FIELD from '@salesforce/schema/Project__c.status__c';
 import PROJECT_TYPE__C_FIELD from '@salesforce/schema/Project__c.project_type__c';
 import END_DATE__C_FIELD from '@salesforce/schema/Project__c.end_date__c';
 import PRIORITY__C_FIELD from '@salesforce/schema/Project__c.priority__C';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 export default class Project extends LightningElement {
   
   @api recordId;
+  @api objectApiName;
   fields =[OWNER__C_FIELD,STATUS__C_FIELD,PROJECT_TYPE__C_FIELD,END_DATE__C_FIELD,PRIORITY__C_FIELD]
-@wire(getObjectInfo, { objectApiName: PROJECT_OBJECT })
-accountMetadata;
-
-@wire(getPicklistValues,
-{
-     recordTypeId: '$accountMetadata.data.defaultRecordTypeId', 
-
-    fieldApiName: PROJECT_TYPE__C_FIELD
-
-        }
-
-    )
-    projecttypePicklist;
-
-    handleChange1(event) {
-
-        this.value = event.detail.value;
-
-    }
-
-    @wire(getPicklistValues,
-
-        {
-
-            recordTypeId: '$accountMetadata.data.defaultRecordTypeId', 
-
-            fieldApiName: OWNER__C_FIELD
-
-        }
-
-    )
-    ownerPicklist;
-
-    handleChange2(event) {
-
-        this.value = event.detail.value;
-
-    }
-
+  @track customFormModal = false; 
     
-    @wire(getPicklistValues,
+  customShowModalPopup() {            
+      this.customFormModal = true;
+  }
 
-        {
-
-            recordTypeId: '$accountMetadata.data.defaultRecordTypeId', 
-
-            fieldApiName: STATUS__C_FIELD
-
-        }
-
-    )
-    statusPicklist;
-
+  customHideModalPopup() {    
+      
+      this.customFormModal = false;
+  }
+  submitDetails(){
+  this.template.querySelector('lightning-record-edit-form').submit();
+    this.customFormModal = false;
+    const evt = new ShowToastEvent({
+      title: 'Successfully Saved',
     
-    handleChange3(event) {
+      variant: 'success',
+      mode: 'dismissable'
+  });
+  this.dispatchEvent(evt);
+  }
+  
+saveAndNewClick() {
+  this.redirect = false;
+  this.template.querySelector('lightning-record-edit-form').submit();
+  this.resetpage = true;
+  this.handleReset();
+}
 
-        this.value = event.detail.value;
+handleReset(event) {
+ // Might be possible to use this.fields instead of a selector
+ 
+ const inputFields = this.template.querySelectorAll('lightning-input-field');
+ if (inputFields) {
+     inputFields.forEach(field => {
+         field.reset();
+     });
+ }
+}
 
-    }
-
-    @wire(getPicklistValues,
-
-        {
-
-            recordTypeId: '$accountMetadata.data.defaultRecordTypeId', 
-
-            fieldApiName: PRIORITY__C_FIELD
-
-        }
-
-    )
-    priorityPicklist;
-
-  modalPopUpToggleFlag = false;
-
-    handlePopup(){
-        this.modalPopUpToggleFlag = true;
-    }
-
-    handleSkip(){
-        this.modalPopUpToggleFlag = false;
-    }
-
-       
-  get acceptedFormats() {
-    return ['.pdf', '.png'];
+get acceptedFormats() {
+  return ['.pdf', '.png'];
 }
 
 handleUploadFinished(event) {
-    // Get the list of uploaded files
-    const uploadedFiles = event.detail.files;
+  
+  const uploadedFiles = event.detail.files;
 }
-
-allowedFormats =  ['font', 'size', 'bold', 'italic', 'underline', 'strike','Bulleted List','Numbered List',
-'indent','Outdent','Add Emoji', 'align', 'link', 'image', 'clean', 'table', 'header',
-'background','code','code-block'];
-
-//this method will display initial text
-get myVal() {
-   return ;
-}
-
-attachment;
-
-handleClick() {
-   const editor  = this.template.querySelector('lightning-input-rich-text');
-   const textToInsert = 'Journey to Salesforce'
-   editor.setRangeText(textToInsert, undefined, undefined, 'select')
-   editor.setFormat({bold: true, size:24, color: 'green', align: 'center',});
-}
+  formats = ['font', 'size', 'bold', 'italic', 'underline',
+        'strike', 'list', 'indent', 'align', 'link',
+        'image', 'clean', 'table', 'header'];
 
 }
